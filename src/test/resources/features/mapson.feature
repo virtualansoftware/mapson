@@ -1,7 +1,7 @@
-Feature: Test Pet API
+Feature: Test Mapson API
 
-Scenario: Setup a mock service for Pet for POST
-    Given create a pet with given input
+Scenario: Setup a mapson data
+    Given Create a json with given jsonpath input
 	| url					| /pets	             |
 	| input                 |  Fish              |
     | output                |  Gold-Fish         |
@@ -9,8 +9,10 @@ Scenario: Setup a mock service for Pet for POST
     | method                |   POST             |
     Then Check the Json is Valid
     | key | {"output":"Gold-Fish","input":"Fish","method":"POST","url":"/pets","httpStatusCode":"201"}|
+  Then Check the reverse way mapson is Valid
 
-  Given create a pet with given input
+
+  Given Create a json with given jsonpath input
     | id					    |  0001	                        |
     | type                      |  donut                        |
     | name                      |  Cake                         |
@@ -39,3 +41,4 @@ Scenario: Setup a mock service for Pet for POST
     | topping[6].type           |   Maple                       |
   Then Check the Json is Valid
     | key |{"ppu":0.55,"batters":{"batter":[{"id":"1001","type":"Regular"},{"id":"1002","type":"Chocolate"},{"id":"1003","type":"Blueberry"},{"id":"1004","type":"Devil's Food"}]},"name":"Cake","id":"0001","type":"donut","topping":[{"id":"5001","type":"None"},{"id":"5002","type":"Glazed"},{"id":"5005","type":"Sugar"},{"id":"5007","type":"Powdered Sugar"},{"id":"5006","type":"Chocolate with Sprinkles"},{"id":"5003","type":"Chocolate"},{"id":"5004","type":"Maple"}]}|
+  Then Check the reverse way mapson is Valid
