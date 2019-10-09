@@ -25,6 +25,23 @@ public class Mapson {
         return json;
     }
     
+    public static String buildMapAsJsonString(Map<String, String> jsonStructMap, Map<String, Object> contextObject ) {
+        Map<String, Object> params = new HashMap<>();
+        for (Map.Entry<String, String> mapsonEntry : jsonStructMap.entrySet()) {
+            String key = mapsonEntry.getKey();
+            if (key.indexOf(".") != -1) {
+                params = buildChildJson(params, key.split("\\."), mapsonEntry.getValue());
+            } else if (key.contains("[") && key.contains("]")) {
+                String elementAt = key.substring(0, key.indexOf("["));
+                params.put(key, buildObjectList(params, key, mapsonEntry.getValue()));
+            } else {
+                params.put(key, getActualValue(mapsonEntry.getValue(),contextObject));
+            }
+        }
+        String json = buildJsonString(params).toString();
+        return json;
+    }
+    
     private static void populateList(int index, List<Object> elementList, Object object) {
         try {
             elementList.set(index, object);
@@ -50,6 +67,28 @@ public class Mapson {
         return elementList;
     }
     
+    private static JSONObject buildJsonString(Map<String, Object> jsonStructMap, Map<String, Object> contextObject) {
+        JSONObject jsonObject = new JSONObject();
+        for (Map.Entry<String, Object> mapEntry : jsonStructMap.entrySet()) {
+            if (mapEntry.getValue() instanceof Map) {
+                setObject(jsonObject, mapEntry.getKey(), buildJsonString((Map<String, Object>) mapEntry.getValue(), contextObject));
+            } else if (mapEntry.getValue() instanceof List) {
+                JSONArray array = new JSONArray();
+                for (Object object : (List<Object>) mapEntry.getValue()) {
+                    if (object instanceof Map) {
+                        JSONObject obj = buildJsonString((Map<String, Object>) object);
+                        array.put(getActualValue(obj, contextObject));
+                    }
+                }
+                setObject(jsonObject, mapEntry.getKey(), array);
+            } else {
+                setObject(jsonObject, mapEntry.getKey(), getActualValue(mapEntry.getValue(), contextObject));
+            }
+            
+        }
+        return jsonObject;
+    }
+    
     private static JSONObject buildJsonString(Map<String, Object> jsonStructMap) {
         JSONObject jsonObject = new JSONObject();
         for (Map.Entry<String, Object> mapEntry : jsonStructMap.entrySet()) {
@@ -67,11 +106,22 @@ public class Mapson {
             } else {
                 setObject(jsonObject, mapEntry.getKey(), mapEntry.getValue());
             }
-    
+            
         }
         return jsonObject;
     }
     
+    private static Object getActualValue(Object object, Map<String, Object> contextObject) {
+        String key = object.toString();
+        if(key.indexOf("[") != -1){
+            String idkey = key.substring(key.indexOf("[")+1, key.indexOf("]"));
+            if(contextObject.containsKey(idkey) ){
+                System.out.println(key.substring(key.indexOf("["), key.indexOf("]")+1));
+                return key.replaceAll("\\["+key.substring(key.indexOf("[")+1, key.indexOf("]")+1),  contextObject.get(idkey).toString());
+            }
+        }
+        return object;
+    }
     private static void setObject(JSONObject jsonObject, String key, Object value) {
         if (value instanceof String) {
             String newValue = (String) value;
@@ -213,5 +263,5 @@ public class Mapson {
         }
         return;
     }
-
+    
 }
