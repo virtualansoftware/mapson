@@ -150,6 +150,22 @@ public class Mapson {
         }
     }
     
+    private static String getPrefixType(JSONObject jsonObject1, String keey) {
+        String prefix = "";
+        if(jsonObject1.get(keey) instanceof Double ) {
+            prefix = "d~";
+        } else if (jsonObject1.get(keey) instanceof Integer) {
+            prefix = "i~";
+        } else if (jsonObject1.get(keey) instanceof Boolean) {
+            prefix = "b~";
+        } else if (jsonObject1.get(keey) instanceof Long) {
+            prefix = "l~";
+        } else if (jsonObject1.get(keey) instanceof Float) {
+            prefix = "f~";
+        }
+        return prefix;
+    }
+    
     private static Map<String, Object> buildChildJson(Map<String, Object> jsonStructMap, String[] key, Object value) {
         String elementAt = key[0];
         if (elementAt.contains("[") && elementAt.contains("]")) {
@@ -246,10 +262,7 @@ public class Mapson {
                 } else if (jsonObject1.optJSONObject(keey) != null) {
                     getJSONPath((JSONObject) jsonObject1.get(keey), keeey, mapsonMap);
                 } else {
-                    String prefix = "";
-                    if(jsonObject1.get(keey) instanceof Double ) {
-                        prefix = "d~";
-                    }
+                    String prefix = getPrefixType(jsonObject1, keey);
                     mapsonMap.put(keeey, prefix + jsonObject1.get(keey));
                 }
             }
@@ -263,5 +276,7 @@ public class Mapson {
         }
         return;
     }
+    
+
     
 }
