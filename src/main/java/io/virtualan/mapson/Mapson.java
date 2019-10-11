@@ -1,5 +1,6 @@
 package io.virtualan.mapson;
 
+import io.virtualan.mapson.exception.BadInputDataException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -8,7 +9,7 @@ import java.util.*;
 
 public class Mapson {
     
-    public static String buildMapAsJsonString(Map<String, String> jsonStructMap) {
+    public static String buildMapAsJsonString(Map<String, String> jsonStructMap) throws BadInputDataException {
         Map<String, Object> params = new HashMap<>();
         for (Map.Entry<String, String> mapsonEntry : jsonStructMap.entrySet()) {
             String key = mapsonEntry.getKey();
@@ -16,7 +17,7 @@ public class Mapson {
                 params = buildChildJson(params, key.split("\\."), mapsonEntry.getValue());
             } else if (key.contains("[") && key.contains("]")) {
                 String elementAt = key.substring(0, key.indexOf("["));
-                params.put(key, buildObjectList(params, key, mapsonEntry.getValue()));
+                params.put(key,buildObjectList(params, key, mapsonEntry.getValue()));
             } else {
                 params.put(key, mapsonEntry.getValue());
             }
@@ -25,7 +26,7 @@ public class Mapson {
         return json;
     }
     
-    public static String buildMapAsJsonString(Map<String, String> jsonStructMap, Map<String, Object> contextObject ) {
+    public static String buildMapAsJsonString(Map<String, String> jsonStructMap, Map<String, Object> contextObject ) throws BadInputDataException {
         Map<String, Object> params = new HashMap<>();
         for (Map.Entry<String, String> mapsonEntry : jsonStructMap.entrySet()) {
             String key = mapsonEntry.getKey();
@@ -33,7 +34,7 @@ public class Mapson {
                 params = buildChildJson(params, key.split("\\."), mapsonEntry.getValue());
             } else if (key.contains("[") && key.contains("]")) {
                 String elementAt = key.substring(0, key.indexOf("["));
-                params.put(key, buildObjectList(params, key, mapsonEntry.getValue()));
+                params.put(elementAt, buildObjectList(params, key, mapsonEntry.getValue()));
             } else {
                 params.put(key, getActualValue(mapsonEntry.getValue(),contextObject));
             }
@@ -65,6 +66,15 @@ public class Mapson {
         List<Object> elementList = extractList(elementAtArray, jsonStructMap);
         populateList(index, elementList, value);
         return elementList;
+    }
+    
+    private static JSONArray buildJsonArray(List<Object> jsonStructList) {
+        JSONArray array = new JSONArray();
+        for (Iterator<Object> it = jsonStructList.iterator(); it.hasNext(); ) {
+            Object ObIterator = it.next();
+            array.put(ObIterator);
+        }
+        return array;
     }
     
     private static JSONObject buildJsonString(Map<String, Object> jsonStructMap, Map<String, Object> contextObject) {
@@ -100,6 +110,8 @@ public class Mapson {
                     if (object instanceof Map) {
                         JSONObject obj = buildJsonString((Map<String, Object>) object);
                         array.put(obj);
+                    } else  {
+                        setObjectByType(array, object);
                     }
                 }
                 setObject(jsonObject, mapEntry.getKey(), array);
@@ -133,6 +145,23 @@ public class Mapson {
         jsonObject.put(key, value);
     }
     
+    private static void setObjectByType(JSONArray jsonArray, Object value) {
+        String[] arrayValue = value.toString().split("~");
+        if ("i".equals(arrayValue[0])) {
+            jsonArray.put(Integer.parseInt(arrayValue[1]));
+        } else if ("b".equals(arrayValue[0])) {
+            jsonArray.put( Boolean.parseBoolean(arrayValue[1]));
+        } else if ("d".equals(arrayValue[0])) {
+            jsonArray.put(Double.parseDouble(arrayValue[1]));
+        } else if ("l".equals(arrayValue[0])) {
+            jsonArray.put(Long.parseLong(arrayValue[1]));
+        } else if ("f".equals(arrayValue[0])) {
+            jsonArray.put(Float.parseFloat(arrayValue[1]));
+        } else {
+            jsonArray.put(value.toString());
+        }
+    }
+    
     private static void setObjectByType(JSONObject jsonObject, String key, Object value, String newValue) {
         String[] arrayValue = newValue.split("~");
         if ("i".equals(arrayValue[0])) {
@@ -150,43 +179,47 @@ public class Mapson {
         }
     }
     
-    private static String getPrefixType(JSONObject jsonObject1, String keey) {
+    private static String getPrefixType(Object object) {
         String prefix = "";
-        if(jsonObject1.get(keey) instanceof Double ) {
+        if(object instanceof Double ) {
             prefix = "d~";
-        } else if (jsonObject1.get(keey) instanceof Integer) {
+        } else if (object  instanceof Integer) {
             prefix = "i~";
-        } else if (jsonObject1.get(keey) instanceof Boolean) {
+        } else if (object  instanceof Boolean) {
             prefix = "b~";
-        } else if (jsonObject1.get(keey) instanceof Long) {
+        } else if (object  instanceof Long) {
             prefix = "l~";
-        } else if (jsonObject1.get(keey) instanceof Float) {
+        } else if (object instanceof Float) {
             prefix = "f~";
         }
         return prefix;
     }
     
-    private static Map<String, Object> buildChildJson(Map<String, Object> jsonStructMap, String[] key, Object value) {
-        String elementAt = key[0];
-        if (elementAt.contains("[") && elementAt.contains("]")) {
-            buildArrayOfObject(jsonStructMap, key, value, elementAt);
-        } else {
-            if (key.length == 1) {
-                jsonStructMap.put(elementAt, value);
-                return jsonStructMap;
-            }
-            buildMapAsJson(jsonStructMap, key, value, elementAt);
-        }
+    private static Map<String, Object> buildChildJson(Map<String, Object> jsonStructMap, String[] key, Object value) throws BadInputDataException {
+       try {
+           String elementAt = key[0];
+           if (elementAt.contains("[") && elementAt.contains("]")) {
+               buildArrayOfObject(jsonStructMap, key, value, elementAt);
+           } else {
+               if (key.length == 1) {
+                   jsonStructMap.put(elementAt, value);
+                   return jsonStructMap;
+               }
+               buildMapAsJson(jsonStructMap, key, value, elementAt);
+           }
+       }catch (Exception e){
+            throw new BadInputDataException("Bad input exception :" + Arrays.toString(key));
+       }
         return jsonStructMap;
     }
     
-    private static void buildMapAsJson(Map<String, Object> jsonStructMap, String[] key, Object value, String elementAt) {
+    private static void buildMapAsJson(Map<String, Object> jsonStructMap, String[] key, Object value, String elementAt) throws BadInputDataException {
         Map<String, Object> obj = extractDirectMap(jsonStructMap, elementAt);
         populateKeyPath(key, value, obj);
         jsonStructMap.put(elementAt, obj);
     }
     
-    private static void populateKeyPath(String[] key, Object value, Map<String, Object> obj) {
+    private static void populateKeyPath(String[] key, Object value, Map<String, Object> obj) throws BadInputDataException {
         String[] subKey = new String[key.length - 1];
         System.arraycopy(key, 1, subKey, 0, subKey.length);
         buildChildJson(obj, subKey, value);
@@ -200,9 +233,13 @@ public class Mapson {
         }
     }
     
-    private static void buildArrayOfObject(Map<String, Object> jsonStructMap, String[] key, Object value, String elementAt) {
+    private static void buildArrayOfObject(Map<String, Object> jsonStructMap, String[] key, Object value, String elementAt) throws BadInputDataException {
         String elementAtArray = elementAt.substring(0, elementAt.indexOf("["));
-        int index = Integer.parseInt(elementAt.substring(elementAt.indexOf("[") + 1, elementAt.indexOf("]")));
+        String indexStr = elementAt.substring(elementAt.indexOf("[") + 1, elementAt.indexOf("]"));
+        if(indexStr.length() ==0){
+            throw new BadInputDataException("Index missing for the json path :" + elementAt );
+        }
+        int index = Integer.parseInt(indexStr);
         List<Map<String, Object>> elementList = extractElementList(jsonStructMap, elementAtArray);
         Map<String, Object> objListMap = extractMap(index, elementList);
         populateKeyPath(key, value, objListMap);
@@ -262,7 +299,7 @@ public class Mapson {
                 } else if (jsonObject1.optJSONObject(keey) != null) {
                     getJSONPath((JSONObject) jsonObject1.get(keey), keeey, mapsonMap);
                 } else {
-                    String prefix = getPrefixType(jsonObject1, keey);
+                    String prefix = getPrefixType(jsonObject1.get(keey));
                     mapsonMap.put(keeey, prefix + jsonObject1.get(keey));
                 }
             }
@@ -271,12 +308,15 @@ public class Mapson {
             int index = 0;
             for (Iterator<Object> iterator = (jsonArray).iterator(); iterator.hasNext(); ) {
                 Object obj = iterator.next();
-                getJSONPath(obj, key +"["+ index++ +"]", mapsonMap);
+                if(obj instanceof  JSONObject || obj instanceof  JSONArray) {
+                    getJSONPath(obj, key + "[" + index++ + "]", mapsonMap);
+                } else {
+                    String prefix = getPrefixType(obj);
+                    mapsonMap.put(key + "[" + index++ + "]", prefix + obj);
+                }
             }
         }
         return;
     }
-    
-
     
 }

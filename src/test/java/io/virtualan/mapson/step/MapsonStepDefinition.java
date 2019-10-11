@@ -4,6 +4,7 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import io.virtualan.mapson.Mapson;
+import io.virtualan.mapson.exception.BadInputDataException;
 import org.junit.Assert;
 import java.util.Map;
 
@@ -25,13 +26,13 @@ public class MapsonStepDefinition {
 	}
 	
 	@Then("Check the Json is Valid")
-	public void validateJson(Map<String, String> JsonExpected) {
+	public void validateJson(Map<String, String> JsonExpected) throws BadInputDataException {
 		jsonActual = Mapson.buildMapAsJsonString(mapson);
 		Assert.assertEquals(JsonExpected.get("key"), jsonActual);
 	}
 	
 	@Then("Check the Json with context value is Valid")
-	public void validateJsonWithContext(Map<String, Object> JsonExpected) {
+	public void validateJsonWithContext(Map<String, Object> JsonExpected) throws BadInputDataException {
 		jsonActual = Mapson.buildMapAsJsonString(mapson, contextObject);
 		Assert.assertEquals(JsonExpected.get("key"), jsonActual);
 	}
