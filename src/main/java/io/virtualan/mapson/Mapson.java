@@ -22,7 +22,7 @@ import org.json.JSONTokener;
 import java.util.*;
 
 
-public class MAPson {
+public class Mapson {
     
     public static String buildMAPsonAsJson(Map<String, String> jsonStructMap) throws BadInputDataException {
         Map<String, Object> params = new HashMap<>();
@@ -104,7 +104,7 @@ public class MAPson {
         JSONObject jsonObject = new JSONObject();
         for (Map.Entry<String, Object> mapEntry : jsonStructMap.entrySet()) {
             if (mapEntry.getValue() instanceof Map) {
-                setObject(jsonObject, mapEntry.getKey(), buildJsonString((Map<String, Object>) mapEntry.getValue(), contextObject));
+                DataTypeHelper.setObject(jsonObject, mapEntry.getKey(), buildJsonString((Map<String, Object>) mapEntry.getValue(), contextObject));
             } else if (mapEntry.getValue() instanceof List) {
                 JSONArray array = new JSONArray();
                 for (Object object : (List<Object>) mapEntry.getValue()) {
@@ -113,9 +113,9 @@ public class MAPson {
                         array.put(getActualValue(obj, contextObject));
                     }
                 }
-                setObject(jsonObject, mapEntry.getKey(), array);
+                DataTypeHelper.setObject(jsonObject, mapEntry.getKey(), array);
             } else {
-                setObject(jsonObject, mapEntry.getKey(), getActualValue(mapEntry.getValue(), contextObject));
+                DataTypeHelper.setObject(jsonObject, mapEntry.getKey(), getActualValue(mapEntry.getValue(), contextObject));
             }
             
         }
@@ -126,7 +126,7 @@ public class MAPson {
         JSONObject jsonObject = new JSONObject();
         for (Map.Entry<String, Object> mapEntry : jsonStructMap.entrySet()) {
             if (mapEntry.getValue() instanceof Map) {
-                setObject(jsonObject, mapEntry.getKey(), buildJsonString((Map<String, Object>) mapEntry.getValue()));
+                DataTypeHelper.setObject(jsonObject, mapEntry.getKey(), buildJsonString((Map<String, Object>) mapEntry.getValue()));
             } else if (mapEntry.getValue() instanceof List) {
                 JSONArray array = new JSONArray();
                 for (Object object : (List<Object>) mapEntry.getValue()) {
@@ -134,12 +134,12 @@ public class MAPson {
                         JSONObject obj = buildJsonString((Map<String, Object>) object);
                         array.put(obj);
                     } else  {
-                        setObjectByType(array, object);
+                        DataTypeHelper.setObjectByType(array, object);
                     }
                 }
-                setObject(jsonObject, mapEntry.getKey(), array);
+                DataTypeHelper.setObject(jsonObject, mapEntry.getKey(), array);
             } else {
-                setObject(jsonObject, mapEntry.getKey(), mapEntry.getValue());
+                DataTypeHelper.setObject(jsonObject, mapEntry.getKey(), mapEntry.getValue());
             }
             
         }
@@ -157,66 +157,7 @@ public class MAPson {
         }
         return object;
     }
-    private static void setObject(JSONObject jsonObject, String key, Object value) {
-        if (value instanceof String) {
-            String newValue = (String) value;
-            if (newValue.indexOf("~") == 1) {
-                setObjectByType(jsonObject, key, value, newValue);
-                return;
-            }
-        }
-        jsonObject.put(key, value);
-    }
     
-    private static void setObjectByType(JSONArray jsonArray, Object value) {
-        String[] arrayValue = value.toString().split("~");
-        if ("i".equals(arrayValue[0])) {
-            jsonArray.put(Integer.parseInt(arrayValue[1]));
-        } else if ("b".equals(arrayValue[0])) {
-            jsonArray.put( Boolean.parseBoolean(arrayValue[1]));
-        } else if ("d".equals(arrayValue[0])) {
-            jsonArray.put(Double.parseDouble(arrayValue[1]));
-        } else if ("l".equals(arrayValue[0])) {
-            jsonArray.put(Long.parseLong(arrayValue[1]));
-        } else if ("f".equals(arrayValue[0])) {
-            jsonArray.put(Float.parseFloat(arrayValue[1]));
-        } else {
-            jsonArray.put(value.toString());
-        }
-    }
-    
-    private static void setObjectByType(JSONObject jsonObject, String key, Object value, String newValue) {
-        String[] arrayValue = newValue.split("~");
-        if ("i".equals(arrayValue[0])) {
-            jsonObject.put(key, Integer.parseInt(arrayValue[1]));
-        } else if ("b".equals(arrayValue[0])) {
-            jsonObject.put(key, Boolean.parseBoolean(arrayValue[1]));
-        } else if ("d".equals(arrayValue[0])) {
-            jsonObject.put(key, Double.parseDouble(arrayValue[1]));
-        } else if ("l".equals(arrayValue[0])) {
-            jsonObject.put(key, Long.parseLong(arrayValue[1]));
-        } else if ("f".equals(arrayValue[0])) {
-            jsonObject.put(key, Float.parseFloat(arrayValue[1]));
-        } else {
-            jsonObject.put(key, value);
-        }
-    }
-    
-    private static String getPrefixType(Object object) {
-        String prefix = "";
-        if(object instanceof Double ) {
-            prefix = "d~";
-        } else if (object  instanceof Integer) {
-            prefix = "i~";
-        } else if (object  instanceof Boolean) {
-            prefix = "b~";
-        } else if (object  instanceof Long) {
-            prefix = "l~";
-        } else if (object instanceof Float) {
-            prefix = "f~";
-        }
-        return prefix;
-    }
     
     private static Map<String, Object> buildChildJson(Map<String, Object> jsonStructMap, String[] key, Object value) throws BadInputDataException {
        try {
@@ -287,16 +228,12 @@ public class MAPson {
     }
     
     private static List<Map<String, Object>> extractElementList(Map<String, Object> jsonStructMap, String elementAtArray) {
-        List<Map<String, Object>> elementList;
+        List<Map<String, Object>> elementList = new ArrayList<>();;
         if (jsonStructMap.containsKey(elementAtArray)) {
             Object objectList = jsonStructMap.get(elementAtArray);
-            if (objectList == null) {
-                elementList = new ArrayList<>();
-            } else {
+            if (objectList != null) {
                 elementList = (List<Map<String, Object>>) objectList;
             }
-        } else {
-            elementList = new ArrayList<>();
         }
         return elementList;
     }
@@ -305,34 +242,46 @@ public class MAPson {
     
     private static void getJSONPath(Object jsonObject, String key, Map<String, String>  mapsonMap) {
         if (jsonObject instanceof JSONObject) {
-            JSONObject jsonObject1 = (JSONObject)jsonObject;
-            Iterator<String> keys = jsonObject1.keys();
-            while (keys.hasNext()) {
-                String keey = keys.next();
-                String keeey = key == null ? keey : key +"."+ keey;
-                if (jsonObject1.optJSONArray(keey) != null) {
-                    getJSONPath(jsonObject1.optJSONArray(keey), keeey, mapsonMap);
-                } else if (jsonObject1.optJSONObject(keey) != null) {
-                    getJSONPath((JSONObject) jsonObject1.get(keey), keeey, mapsonMap);
-                } else {
-                    String prefix = getPrefixType(jsonObject1.get(keey));
-                    mapsonMap.put(keeey, prefix + jsonObject1.get(keey));
-                }
-            }
+            getSubJson((JSONObject) jsonObject, key, mapsonMap);
         } else  if (jsonObject instanceof JSONArray) {
             JSONArray jsonArray = ((JSONArray) jsonObject);
             int index = 0;
-            for (Iterator<Object> iterator = (jsonArray).iterator(); iterator.hasNext(); ) {
-                Object obj = iterator.next();
-                if(obj instanceof  JSONObject || obj instanceof  JSONArray) {
-                    getJSONPath(obj, key + "[" + index++ + "]", mapsonMap);
-                } else {
-                    String prefix = getPrefixType(obj);
-                    mapsonMap.put(key + "[" + index++ + "]", prefix + obj);
-                }
-            }
+            getSubArrayPath(key, mapsonMap, jsonArray, index);
         }
         return;
+    }
+    
+    private static void getSubJson(JSONObject jsonObject, String key, Map<String, String> mapsonMap) {
+        JSONObject jsonObject1 = jsonObject;
+        Iterator<String> keys = jsonObject1.keys();
+        while (keys.hasNext()) {
+            String keey = keys.next();
+            String keeey = key == null ? keey : key +"."+ keey;
+            getSubPath(mapsonMap, jsonObject1, keey, keeey);
+        }
+    }
+    
+    private static void getSubArrayPath(String key, Map<String, String> mapsonMap, JSONArray jsonArray, int index) {
+        for (Iterator<Object> iterator = (jsonArray).iterator(); iterator.hasNext(); ) {
+            Object obj = iterator.next();
+            if(obj instanceof JSONObject || obj instanceof  JSONArray) {
+                getJSONPath(obj, key + "[" + index++ + "]", mapsonMap);
+            } else {
+                String prefix = DataTypeHelper.getPrefixType(obj);
+                mapsonMap.put(key + "[" + index++ + "]", prefix + obj);
+            }
+        }
+    }
+    
+    private static void getSubPath(Map<String, String> mapsonMap, JSONObject jsonObject1, String keey, String keeey) {
+        if (jsonObject1.optJSONArray(keey) != null) {
+            getJSONPath(jsonObject1.optJSONArray(keey), keeey, mapsonMap);
+        } else if (jsonObject1.optJSONObject(keey) != null) {
+            getJSONPath((JSONObject) jsonObject1.get(keey), keeey, mapsonMap);
+        } else {
+            String prefix = DataTypeHelper.getPrefixType(jsonObject1.get(keey));
+            mapsonMap.put(keeey, prefix + jsonObject1.get(keey));
+        }
     }
     
 }

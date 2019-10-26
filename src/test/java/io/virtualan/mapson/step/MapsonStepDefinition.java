@@ -17,12 +17,14 @@ package io.virtualan.mapson.step;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
-import io.virtualan.mapson.MAPson;
+import io.virtualan.mapson.Mapson;
 import io.virtualan.mapson.exception.BadInputDataException;
 import org.junit.Assert;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class MapsonStepDefinition {
+	private final static Logger LOGGER = Logger.getLogger(MapsonStepDefinition.class.getName());
 	
 	private String jsonActual;
 	Map<String, String> mapson;
@@ -41,25 +43,25 @@ public class MapsonStepDefinition {
 	
 	@Then("validate the Json is as Expected")
 	public void validateJson(Map<String, String> JsonExpected) throws BadInputDataException {
-		jsonActual = MAPson.buildMAPsonAsJson(mapson);
+		jsonActual = Mapson.buildMAPsonAsJson(mapson);
 		Assert.assertEquals(JsonExpected.get("key"), jsonActual);
 	}
 	
 	@Then("check the Json with context value is Valid")
 	public void validateJsonWithContext(Map<String, Object> JsonExpected) throws BadInputDataException {
-		jsonActual = MAPson.buildMAPsonAsJson(mapson, contextObject);
+		jsonActual = Mapson.buildMAPsonAsJson(mapson, contextObject);
 		Assert.assertEquals(JsonExpected.get("key"), jsonActual);
 	}
 	
 	@Then("check the reverse way able to to create the MAPson successfully")
 	public void validateJson() {
 		Map<String, String> firstMap = mapson;
-		Map<String, String> secondMap = MAPson.buildMAPsonFromJson(jsonActual);
+		Map<String, String> secondMap = Mapson.buildMAPsonFromJson(jsonActual);
 		for (Map.Entry<String, String> firstEntry : firstMap.entrySet()) {
 			String firstMapValue = firstEntry.getValue();
 			String secondMapValue = secondMap.get(firstEntry.getKey());
 			if(!firstMapValue.equals(secondMapValue)){
-				System.out.println(firstEntry.getKey() + " " + firstMapValue + " " + secondMapValue + " " + firstMapValue.equals(secondMapValue));
+				LOGGER.warning(firstEntry.getKey() + " " + firstMapValue + " " + secondMapValue + " " + firstMapValue.equals(secondMapValue));
 			}
 		}
 		Assert.assertTrue(areEqual(firstMap, secondMap));
@@ -68,12 +70,12 @@ public class MapsonStepDefinition {
 	@Then("check the reverse way MAPson is Invalid")
 	public void inValidateJson() {
 		Map<String, String> firstMap = mapson;
-		Map<String, String> secondMap = MAPson.buildMAPsonFromJson(jsonActual);
+		Map<String, String> secondMap = Mapson.buildMAPsonFromJson(jsonActual);
 		for (Map.Entry<String, String> firstEntry : firstMap.entrySet()) {
 			String firstMapValue = firstEntry.getValue();
 			String secondMapValue = secondMap.get(firstEntry.getKey());
 			if(!firstMapValue.equals(secondMapValue)){
-				System.out.println(firstEntry.getKey() + " " + firstMapValue + " " + secondMapValue + " " + firstMapValue.equals(secondMapValue));
+				LOGGER.warning(firstEntry.getKey() + " " + firstMapValue + " " + secondMapValue + " " + firstMapValue.equals(secondMapValue));
 			}
 		}
 		Assert.assertFalse(areEqual(firstMap, secondMap));
