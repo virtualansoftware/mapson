@@ -132,12 +132,12 @@
 ```java
 @Given("create a Json with given MAPson input")
 public void validateJson(Map<String, String> jsonPathMap) {
-    JSONObject jsonActual = MAPson.buildMAPsonAsJson(jsonPathMap);
+    String jsonActual = MAPson.buildMAPsonAsJson(jsonPathMap);
     Assert.assertEquals(JsonExpected.get("key"), jsonActual);
 }
 ```
 #### Example 2: Convert map as json for API testing with context value
-**API:** MAPson.buildMAPsonAsJson(jsonPathMap, context)
+**API:** MAPson.buildMAPsonAsJson(jsonPathMap, contextMap)
 ```gherkin
 Scenario: Create and validate how to create MAPson data and replace with context value
     Given create a Json with given MAPson input
@@ -155,7 +155,7 @@ Scenario: Create and validate how to create MAPson data and replace with context
 ```Java
 @Then("check the Json with context value is Valid")
 public void validateJsonWithContext(Map<String, Object> JsonExpected) throws BadInputDataException {
-    jsonActual = MAPson.buildMAPsonAsJson(mapson, contextObject);
+    String jsonActual = MAPson.buildMAPsonAsJson(mapson, contextMap);
     Assert.assertEquals(JsonExpected.get("key"), jsonActual);
 }
 ```
