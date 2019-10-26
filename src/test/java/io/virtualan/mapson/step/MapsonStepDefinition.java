@@ -1,9 +1,23 @@
+/*
+ *   Copyright (c) 2019.  Virtualan Software Contributors (https://virtualan.io)
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ *   in compliance with the License. You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software distributed under the License
+ *   is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ *   or implied. See the License for the specific language governing permissions and limitations under
+ *   the License.
+ */
+
 package io.virtualan.mapson.step;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
-import io.virtualan.mapson.Mapson;
+import io.virtualan.mapson.MAPson;
 import io.virtualan.mapson.exception.BadInputDataException;
 import org.junit.Assert;
 import java.util.Map;
@@ -15,32 +29,32 @@ public class MapsonStepDefinition {
 	Map<String, Object> contextObject;
 	
 	
-	@Given("Create a json with given jsonpath input$")
+	@Given("create a Json with given MAPson input$")
 	public void createJson(Map<String, String> inputJsonPathMap)  {
 		mapson = inputJsonPathMap;
 	}
 	
-	@And("Build context Object$")
+	@And("build context object$")
 	public void createContextObject(Map<String, Object> inputMap)  {
 		contextObject = inputMap;
 	}
 	
-	@Then("Check the Json is Valid")
+	@Then("validate the Json is as Expected")
 	public void validateJson(Map<String, String> JsonExpected) throws BadInputDataException {
-		jsonActual = Mapson.buildMapAsJsonString(mapson);
+		jsonActual = MAPson.buildMAPsonAsJson(mapson);
 		Assert.assertEquals(JsonExpected.get("key"), jsonActual);
 	}
 	
-	@Then("Check the Json with context value is Valid")
+	@Then("check the Json with context value is Valid")
 	public void validateJsonWithContext(Map<String, Object> JsonExpected) throws BadInputDataException {
-		jsonActual = Mapson.buildMapAsJsonString(mapson, contextObject);
+		jsonActual = MAPson.buildMAPsonAsJson(mapson, contextObject);
 		Assert.assertEquals(JsonExpected.get("key"), jsonActual);
 	}
 	
-	@Then("Check the reverse way mapson is Valid")
+	@Then("check the reverse way able to to create the MAPson successfully")
 	public void validateJson() {
 		Map<String, String> firstMap = mapson;
-		Map<String, String> secondMap = Mapson.buildMapson(jsonActual);
+		Map<String, String> secondMap = MAPson.buildMAPsonFromJson(jsonActual);
 		for (Map.Entry<String, String> firstEntry : firstMap.entrySet()) {
 			String firstMapValue = firstEntry.getValue();
 			String secondMapValue = secondMap.get(firstEntry.getKey());
@@ -51,10 +65,10 @@ public class MapsonStepDefinition {
 		Assert.assertTrue(areEqual(firstMap, secondMap));
 	}
 	
-	@Then("Check the reverse way mapson is Invalid")
+	@Then("check the reverse way MAPson is Invalid")
 	public void inValidateJson() {
 		Map<String, String> firstMap = mapson;
-		Map<String, String> secondMap = Mapson.buildMapson(jsonActual);
+		Map<String, String> secondMap = MAPson.buildMAPsonFromJson(jsonActual);
 		for (Map.Entry<String, String> firstEntry : firstMap.entrySet()) {
 			String firstMapValue = firstEntry.getValue();
 			String secondMapValue = secondMap.get(firstEntry.getKey());

@@ -1,22 +1,21 @@
-Feature: Test Mapson API
-
-  Scenario: Setup a mapson data
-    Given Create a json with given jsonpath input
-      | url					| /pets	             |
+Feature: Test MAPson API
+  Scenario: Create and validate how to create MAPson data and validate the JSON
+    Given create a Json with given MAPson input
+      | url					  | /pets	           |
       | input                 |  Fish              |
       | output                |  Gold-Fish         |
-      | httpStatusCode	    |   201              |
+      | httpStatusCode	      |   201              |
       | method                |   POST             |
-    Then Check the Json is Valid
+    Then validate the Json is as Expected
       | key | {"output":"Gold-Fish","input":"Fish","method":"POST","url":"/pets","httpStatusCode":"201"}|
-    Then Check the reverse way mapson is Valid
+    Then check the reverse way able to to create the MAPson successfully
 
-
-    Given Create a json with given jsonpath input
-      | id					    |  0001	                        |
+  Scenario: Create and validate how to create MAPson data and validate data type
+    Given create a Json with given MAPson input
+      | id					      |  0001	                      |
       | type                      |  donut                        |
       | name                      |  Cake                         |
-      | ppu	                    |   d~0.55                      |
+      | ppu	                      |   d~0.55                      |
       | batters.batter[0].id      |   1001                        |
       | batters.batter[0].type    |   Regular                     |
       | batters.batter[1].id      |   1002                        |
@@ -39,29 +38,29 @@ Feature: Test Mapson API
       | topping[5].type           |   Chocolate                   |
       | topping[6].id             |   5004                        |
       | topping[6].type           |   Maple                       |
-    Then Check the Json is Valid
+    Then validate the Json is as Expected
       | key |{"ppu":0.55,"batters":{"batter":[{"id":"1001","type":"Regular"},{"id":"1002","type":"Chocolate"},{"id":"1003","type":"Blueberry"},{"id":"1004","type":"Devil's Food"}]},"name":"Cake","id":"0001","type":"donut","topping":[{"id":"5001","type":"None"},{"id":"5002","type":"Glazed"},{"id":"5005","type":"Sugar"},{"id":"5007","type":"Powdered Sugar"},{"id":"5006","type":"Chocolate with Sprinkles"},{"id":"5003","type":"Chocolate"},{"id":"5004","type":"Maple"}]}|
-    Then Check the reverse way mapson is Valid
+    Then check the reverse way able to to create the MAPson successfully
 
-
-    Given Create a json with given jsonpath input
-      | url					| /pets	             |
+  Scenario: Create and validate how to create MAPson data and replace with context value
+    Given create a Json with given MAPson input
+      | url					  | /pets	           |
       | input                 |  Fish              |
       | output                |  Gold-Fish         |
-      | httpStatusCode	    |   201              |
-      | method                |   [method]         |
-    And Build context Object
-      | method                |   POST             |
-    Then Check the Json with context value is Valid
+      | httpStatusCode	      |   201              |
+      | method                |   [action]         |
+    And build context object
+      | action                |   POST             |
+    Then check the Json with context value is Valid
       | key | {"output":"Gold-Fish","input":"Fish","method":"POST","url":"/pets","httpStatusCode":"201"}|
-    Then Check the reverse way mapson is Invalid
+    Then check the reverse way MAPson is Invalid
 
-
-    Given Create a json with given jsonpath input
-      | id					    |  0001	                        |
+  Scenario: Create and validate how to create MAPson data and replace with context value for digit
+    Given create a Json with given MAPson input
+      | id    				      |  0001                         |
       | type                      |  donut                        |
       | name                      |  Cake                         |
-      | ppu	                    |   d~[ppu]                      |
+      | ppu	                      |   d~[ppu]                     |
       | batters.batter[0].id      |   1001                        |
       | batters.batter[0].type    |   Regular                     |
       | batters.batter[1].id      |   1002                        |
@@ -84,22 +83,22 @@ Feature: Test Mapson API
       | topping[5].type           |   Chocolate                   |
       | topping[6].id             |   5004                        |
       | topping[6].type           |   Maple                       |
-    And Build context Object
+    And build context object
       | ppu |   0.55  |
-    Then Check the Json with context value is Valid
+    Then check the Json with context value is Valid
       | key |{"ppu":0.55,"batters":{"batter":[{"id":"1001","type":"Regular"},{"id":"1002","type":"Chocolate"},{"id":"1003","type":"Blueberry"},{"id":"1004","type":"Devil's Food"}]},"name":"Cake","id":"0001","type":"donut","topping":[{"id":"5001","type":"None"},{"id":"5002","type":"Glazed"},{"id":"5005","type":"Sugar"},{"id":"5007","type":"Powdered Sugar"},{"id":"5006","type":"Chocolate with Sprinkles"},{"id":"5003","type":"Chocolate"},{"id":"5004","type":"Maple"}]}|
-    Then Check the reverse way mapson is Invalid
+    Then check the reverse way MAPson is Invalid
 
-
-    Given Create a json with given jsonpath input
+  Scenario: Create and validate for create MAPson from JSON
+    Given create a Json with given MAPson input
       | id					    |  0001	                        |
-      | type                      |  donut                        |
-      | name                      |  Cake                         |
-      | ppu	                     |   d~[ppu]                      |
-      | toppings[0]               |   l~5001                        |
-      | toppings[1]               |   l~2001                        |
-    And Build context Object
+      | type                    |  donut                        |
+      | name                    |  Cake                         |
+      | ppu	                    |   d~[ppu]                     |
+      | toppings[0]             |   l~5001                      |
+      | toppings[1]             |   l~2001                      |
+    And build context object
       | ppu |   0.55  |
-    Then Check the Json with context value is Valid
+    Then check the Json with context value is Valid
       | key |{"ppu":0.55,"name":"Cake","toppings":[5001,2001],"id":"0001","type":"donut"}|
-    Then Check the reverse way mapson is Invalid
+    Then check the reverse way MAPson is Invalid
