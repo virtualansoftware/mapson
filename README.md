@@ -155,7 +155,7 @@ Scenario: Create and validate how to create MAPson data and replace with context
 
 ```Java
 @Then("check the Json with context value is Valid")
-public void validateJsonWithContext(Map<String, Object> JsonExpected) throws BadInputDataException {
+public void validateJsonWithContext(Map<String, String> JsonExpected) throws BadInputDataException {
     String jsonActual = MAPson.buildMAPsonAsJson(mapson, contextMap);
     Assert.assertEquals(JsonExpected.get("key"), jsonActual);
 }
