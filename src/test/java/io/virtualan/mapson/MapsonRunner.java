@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 		features={"classpath:features/"},
 		glue = { "io.virtualan.mapson" }
 		)
-public class MAPsonRunner {
+public class MapsonRunner {
 
 
 }
