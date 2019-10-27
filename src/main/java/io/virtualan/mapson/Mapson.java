@@ -49,7 +49,7 @@ public class Mapson {
         return mapsonMap;
     }
     
-    public static String buildMAPsonAsJson(Map<String, String> jsonStructMap, Map<String, Object> contextObject ) throws BadInputDataException {
+    public static String buildMAPsonAsJson(Map<String, String> jsonStructMap, Map<String, String> contextObject ) throws BadInputDataException {
         Map<String, Object> params = new HashMap<>();
         for (Map.Entry<String, String> mapsonEntry : jsonStructMap.entrySet()) {
             String key = mapsonEntry.getKey();
@@ -100,7 +100,7 @@ public class Mapson {
         return array;
     }
     
-    private static JSONObject buildJsonString(Map<String, Object> jsonStructMap, Map<String, Object> contextObject) {
+    private static JSONObject buildJsonString(Map<String, Object> jsonStructMap, Map<String, String> contextObject) {
         JSONObject jsonObject = new JSONObject();
         for (Map.Entry<String, Object> mapEntry : jsonStructMap.entrySet()) {
             if (mapEntry.getValue() instanceof Map) {
@@ -146,7 +146,7 @@ public class Mapson {
         return jsonObject;
     }
     
-    private static Object getActualValue(Object object, Map<String, Object> contextObject) {
+    private static Object getActualValue(Object object, Map<String, String> contextObject) {
         String key = object.toString();
         if(key.indexOf("[") != -1){
             String idkey = key.substring(key.indexOf("[")+1, key.indexOf("]"));
