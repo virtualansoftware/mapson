@@ -5,11 +5,11 @@
   
   **Example:** MAPSON and equivalent JSON:
   
-  ### MAPSON:
+  ### MAPson:
  
   | key  | value |
   | ---------- | ----- |
-  | id					      |  0001	                      |
+  | id                        |  0001	                        |
   | type                      |  donut                        |
   | name                      |  Cake                         |
   | ppu	                      |   d~0.55                      |
