@@ -4,7 +4,7 @@
   <artifactId>mapson</artifactId>
   <packaging>jar</packaging>
   <name>mapson</name>
-  <version>1.0.0</version>
+  <version>1.0.0-SNAPSHOT</version>
   <properties>
     <java.version>1.8</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
