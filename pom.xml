@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.virtualan</groupId>
   <artifactId>mapson</artifactId>
@@ -15,6 +17,13 @@
     <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
   </properties>
+  <description>
+    MAPson library represents JSON as MAP with key as Json-Path. MAPson provides options to work
+    json as MAP. It removes technical dependency between gherkin and Json. This would help lot more
+    for Product Owner/Business analysts(Non technical team members) can create a features without
+    knowing the details and simply using JSON hierarchy
+  </description>
+  <url>https://www.mapson.io/</url>
   <licenses>
     <license>
       <name>Apache License 2.0</name>
@@ -24,7 +33,8 @@
   </licenses>
   <scm>
     <connection>scm:git:ssh://git@github.com:virtualansoftware/mapson.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/virtualansoftware/mapson.git</developerConnection>
+    <developerConnection>scm:git:ssh://git@github.com/virtualansoftware/mapson.git
+    </developerConnection>
     <url>https://github.com/virtualansoftware/mapson.git</url>
     <tag>v1.0.0</tag>
   </scm>
@@ -71,7 +81,7 @@
           </includes>
         </configuration>
       </plugin>
-      </plugins>
+    </plugins>
   </build>
   <profiles>
     <profile>
