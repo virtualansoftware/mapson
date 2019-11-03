@@ -27,15 +27,30 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+/**
+ * MAPson library represents JSON as MAP with key as Json-Path. MAPson provides options to work json
+ * as MAP. It removes technical dependency between gherkin and Json. This would help lot more for
+ * Product Owner/Business analysts(Non technical team members) can create a features without knowing
+ * the details and simply using JSON hierarchy.
+ */
 public class Mapson {
 
   private Mapson() {
   }
 
-  public static String buildMAPsonAsJson(Map<String, String> jsonStructMap)
+
+  /**
+   * Build JSON string from Json-Path as key value pair. Usage refer read me file and test code for
+   * examples
+   *
+   * @param jsonPathMap the json path as key value pair
+   * @return the json string
+   * @throws BadInputDataException the bad input data exception
+   */
+  public static String buildMAPsonAsJson(Map<String, String> jsonPathMap)
       throws BadInputDataException {
     Map<String, Object> params = new HashMap<>();
-    for (Map.Entry<String, String> mapsonEntry : jsonStructMap.entrySet()) {
+    for (Map.Entry<String, String> mapsonEntry : jsonPathMap.entrySet()) {
       String key = mapsonEntry.getKey();
       if (key.indexOf('.') != -1) {
         buildChildJson(params, key.split("\\."), mapsonEntry.getValue());
@@ -48,10 +63,20 @@ public class Mapson {
     return buildJsonString(params).toString();
   }
 
-  public static String buildMAPsonAsJson(Map<String, String> jsonStructMap,
+
+  /**
+   * Build JSON string from Json-Path as key value pair. Context value could be replaced in the JSON
+   * structure. Usage refer read me file and test code for examples
+   *
+   * @param jsonPathMap   the json path as key value pair
+   * @param contextObject the context object
+   * @return json as string
+   * @throws BadInputDataException the bad input data exception
+   */
+  public static String buildMAPsonAsJson(Map<String, String> jsonPathMap,
       Map<String, String> contextObject) throws BadInputDataException {
     Map<String, Object> params = new HashMap<>();
-    for (Map.Entry<String, String> mapsonEntry : jsonStructMap.entrySet()) {
+    for (Map.Entry<String, String> mapsonEntry : jsonPathMap.entrySet()) {
       String key = mapsonEntry.getKey();
       if (key.indexOf('.') != -1) {
         buildChildJson(params, key.split("\\."), mapsonEntry.getValue());
@@ -65,6 +90,14 @@ public class Mapson {
     return buildJsonString(params).toString();
   }
 
+
+  /**
+   * Build MAPson(Json-Path as key value pair) from json string. Usage refer read me file and test
+   * code for examples
+   *
+   * @param json the json
+   * @return the map
+   */
   public static Map<String, String> buildMAPsonFromJson(String json) {
     JSONTokener jsonTokener = new JSONTokener(json);
     JSONObject jsonObject = new JSONObject(jsonTokener);

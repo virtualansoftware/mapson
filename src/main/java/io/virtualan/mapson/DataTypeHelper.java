@@ -17,12 +17,22 @@ package io.virtualan.mapson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * The MAPson Data type helper.
+ */
 public class DataTypeHelper {
 
   private DataTypeHelper() {
 
   }
 
+  /**
+   * Sets object.
+   *
+   * @param jsonObject the json object
+   * @param key        the key
+   * @param value      the value
+   */
   public static void setObject(JSONObject jsonObject, String key, Object value) {
     if (value instanceof String) {
       String newValue = (String) value;
@@ -34,6 +44,12 @@ public class DataTypeHelper {
     jsonObject.put(key, value);
   }
 
+  /**
+   * Sets object by type.
+   *
+   * @param jsonArray the json array
+   * @param value     the value
+   */
   public static void setObjectByType(JSONArray jsonArray, Object value) {
     String[] arrayValue = value.toString().split("~");
     if ("i".equals(arrayValue[0])) {
@@ -51,6 +67,14 @@ public class DataTypeHelper {
     }
   }
 
+  /**
+   * Sets object by type.
+   *
+   * @param jsonObject the json object
+   * @param key        the key
+   * @param value      the value
+   * @param newValue   the new value
+   */
   public static void setObjectByType(JSONObject jsonObject, String key, Object value,
       String newValue) {
     String[] arrayValue = newValue.split("~");
@@ -69,6 +93,12 @@ public class DataTypeHelper {
     }
   }
 
+  /**
+   * Gets prefix type.
+   *
+   * @param object the object
+   * @return the prefix type
+   */
   public static String getPrefixType(Object object) {
     String prefix = "";
     if (object instanceof Double) {
