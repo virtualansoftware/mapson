@@ -1,14 +1,15 @@
-# MAPSON
+
+# MAPSON  [![Build Status](https://travis-ci.com/virtualansoftware/mapson.svg?token=1uSVu5CX3hNx7Wvdqibx&branch=develop)](https://travis-ci.com/virtualansoftware/mapson)
   MAPson library represents JSON as MAP with key as Json-Path. MAPson provides options to work json as MAP.
-  It removes technical dependency between gherkin and Json. This would help lot more for Product Owner/Business analysts(Non technical team members) can create a features without knowing the details and simply using JSON hierarchy.
+  **It removes dependency between Gherkin and Json**. This would **help lot more for Product Owner/Business analysts(Non technical team members) can create a features without knowing** the details. Simply knowing the JSON hierarchy.
   
   **Example:** MAPSON and equivalent JSON:
   
-  ### MAPSON:
+  ### MAPson:
  
   | key  | value |
   | ---------- | ----- |
-  | id					      |  0001	                      |
+  | id                        |  0001	                        |
   | type                      |  donut                        |
   | name                      |  Cake                         |
   | ppu	                      |   d~0.55                      |
@@ -132,12 +133,12 @@
 ```java
 @Given("create a Json with given MAPson input")
 public void validateJson(Map<String, String> jsonPathMap) {
-    JSONObject jsonActual = MAPson.buildMAPsonAsJson(jsonPathMap);
+    String jsonActual = MAPson.buildMAPsonAsJson(jsonPathMap);
     Assert.assertEquals(JsonExpected.get("key"), jsonActual);
 }
 ```
 #### Example 2: Convert map as json for API testing with context value
-**API:** MAPson.buildMAPsonAsJson(jsonPathMap, context)
+**API:** MAPson.buildMAPsonAsJson(jsonPathMap, contextMap)
 ```gherkin
 Scenario: Create and validate how to create MAPson data and replace with context value
     Given create a Json with given MAPson input
@@ -154,11 +155,16 @@ Scenario: Create and validate how to create MAPson data and replace with context
 
 ```Java
 @Then("check the Json with context value is Valid")
-public void validateJsonWithContext(Map<String, Object> JsonExpected) throws BadInputDataException {
-    jsonActual = MAPson.buildMAPsonAsJson(mapson, contextObject);
+public void validateJsonWithContext(Map<String, String> JsonExpected) throws BadInputDataException {
+    String jsonActual = MAPson.buildMAPsonAsJson(mapson, contextMap);
     Assert.assertEquals(JsonExpected.get("key"), jsonActual);
 }
 ```
+### Reference
+#### Example Feature File: [![mapson.feature](https://github.com/virtualansoftware/mapson/blob/develop/src/test/resources/features/mapson.feature)]
+
+#### Example StepDefinition File: [![MapsonStepDefinition.java](https://github.com/virtualansoftware/mapson/blob/develop/src/test/java/io/virtualan/mapson/step/MapsonStepDefinition.java)]
+ 
 
 Thank you for visiting!!!
 -

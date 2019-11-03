@@ -15,16 +15,27 @@
 package io.virtualan.mapson;
 
 
-import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
+import org.junit.Assert;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
+		plugin = {"progress",
+				"html:target/report/html",
+				"junit:target/report/junit/cucumber-report.xml",
+				"json:target/report/json/cucumber-report.json"
+		},
 		features={"classpath:features/"},
-		glue = { "io.virtualan.mapson" }
+		glue = { "io.virtualan.mapson.step" }
 		)
-public class MAPsonRunner {
-
-
+public class MapsonRunner {
+	
+	@Test
+	public void test()
+	{
+		Assert.assertTrue("This will succeed.", true);
+	}
 }
