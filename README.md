@@ -1,5 +1,5 @@
 
-# MAPSON  [![Build Status](https://travis-ci.com/virtualansoftware/mapson.svg?token=1uSVu5CX3hNx7Wvdqibx&branch=develop)](https://travis-ci.com/virtualansoftware/mapson)
+# MAPson  [![Build Status](https://travis-ci.com/virtualansoftware/mapson.svg?token=1uSVu5CX3hNx7Wvdqibx&branch=develop)](https://travis-ci.com/virtualansoftware/mapson)
   MAPson library represents JSON as MAP with key as Json-Path. MAPson provides options to work json as MAP.
   **It removes dependency between Gherkin and Json**. This would **help lot more for Product Owner/Business analysts(Non technical team members) can create a features without knowing** the technical details. Simply knowing the JSON hierarchy.
   
