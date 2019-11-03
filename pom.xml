@@ -23,6 +23,8 @@
 			<id>elans3</id>
 			<name>Elan Thangamani</name>
 			<email>elans3.java@gmail.com</email>
+			<organization>Virtualan Software</organization>
+			<organizationUrl>http://www.virtualansoftware.com</organizationUrl>
 		</developer>
 	</developers>
 	<distributionManagement>
@@ -93,5 +95,5 @@
 			<scope>test</scope>
 		</dependency>
 
-	</dependencies>
+  </dependencies>
 </project>
