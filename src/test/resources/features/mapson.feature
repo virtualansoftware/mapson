@@ -12,10 +12,10 @@ Feature: Test MAPson API
 
   Scenario: Create and validate how to create MAPson data and validate data type
     Given create a Json with given MAPson input
-      | id                        |  0001	                      |
+      | id                        |  0001                         |
       | type                      |  donut                        |
       | name                      |  Cake                         |
-      | ppu	                      |   d~0.55                      |
+      | ppu                       |   d~0.55                      |
       | batters.batter[0].id      |   1001                        |
       | batters.batter[0].type    |   Regular                     |
       | batters.batter[1].id      |   1002                        |
@@ -60,7 +60,7 @@ Feature: Test MAPson API
       | id                        |  0001                         |
       | type                      |  donut                        |
       | name                      |  Cake                         |
-      | ppu	                      |   d~[ppu]                     |
+      | ppu                       |   d~[ppu]                     |
       | batters.batter[0].id      |   1001                        |
       | batters.batter[0].type    |   Regular                     |
       | batters.batter[1].id      |   1002                        |
@@ -91,10 +91,10 @@ Feature: Test MAPson API
 
   Scenario: Create and validate for create MAPson from JSON
     Given create a Json with given MAPson input
-      | id                      |  0001	                        |
+      | id                      |  0001                         |
       | type                    |  donut                        |
       | name                    |  Cake                         |
-      | ppu	                    |   d~[ppu]                     |
+      | ppu                     |   d~[ppu]                     |
       | toppings[0]             |   l~5001                      |
       | toppings[1]             |   l~2001                      |
     And build context object
