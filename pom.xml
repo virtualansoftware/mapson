@@ -19,7 +19,7 @@
     <connection>scm:git:ssh://git@github.com:virtualansoftware/mapson.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/virtualansoftware/mapson.git</developerConnection>
     <url>https://github.com/virtualansoftware/mapson.git</url>
-    <tag>mapson-1.0.0</tag>
+    <tag>v1.0.0</tag>
   </scm>
   <developers>
     <!-- original author of the project -->
