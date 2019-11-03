@@ -1,7 +1,7 @@
 Feature: Test MAPson API
   Scenario: Create and validate how to create MAPson data and validate the JSON
     Given create a Json with given MAPson input
-      | url					  | /pets	           |
+      | url                   | /pets              |
       | input                 |  Fish              |
       | output                |  Gold-Fish         |
       | httpStatusCode	      |   201              |
@@ -12,7 +12,7 @@ Feature: Test MAPson API
 
   Scenario: Create and validate how to create MAPson data and validate data type
     Given create a Json with given MAPson input
-      | id					      |  0001	                      |
+      | id                        |  0001	                      |
       | type                      |  donut                        |
       | name                      |  Cake                         |
       | ppu	                      |   d~0.55                      |
@@ -44,7 +44,7 @@ Feature: Test MAPson API
 
   Scenario: Create and validate how to create MAPson data and replace with context value
     Given create a Json with given MAPson input
-      | url					  | /pets	           |
+      | url                   | /pets              |
       | input                 |  Fish              |
       | output                |  Gold-Fish         |
       | httpStatusCode	      |   201              |
@@ -57,7 +57,7 @@ Feature: Test MAPson API
 
   Scenario: Create and validate how to create MAPson data and replace with context value for digit
     Given create a Json with given MAPson input
-      | id    				      |  0001                         |
+      | id                        |  0001                         |
       | type                      |  donut                        |
       | name                      |  Cake                         |
       | ppu	                      |   d~[ppu]                     |
@@ -91,7 +91,7 @@ Feature: Test MAPson API
 
   Scenario: Create and validate for create MAPson from JSON
     Given create a Json with given MAPson input
-      | id					    |  0001	                        |
+      | id                      |  0001	                        |
       | type                    |  donut                        |
       | name                    |  Cake                         |
       | ppu	                    |   d~[ppu]                     |
