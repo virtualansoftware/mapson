@@ -19,9 +19,7 @@
   </properties>
   <description>
     MAPson library represents JSON as MAP with key as Json-Path. MAPson provides options to work
-    json as MAP. It removes technical dependency between gherkin and Json. This would help lot more
-    for Product Owner/Business analysts(Non technical team members) can create a features without
-    knowing the details and simply using JSON hierarchy
+    json as MAP.
   </description>
   <url>https://www.mapson.io/</url>
   <licenses>
