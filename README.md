@@ -4,9 +4,19 @@
   MAPson library represents JSON as MAP with key as Json-Path. MAPson provides options to work json as MAP.
   **It removes dependency between Gherkin and Json**. This would **help lot more for Product Owner/Business analysts(Non technical team members) can create a features without knowing** the technical details. Simply knowing the JSON hierarchy.
   
-  **Example:** MAPson and equivalent JSON:
+ ## Maven dependency:
   
-  ### MAPson:
+  ```mvn 
+    <dependency>
+      <groupId>io.virtualan</groupId>
+       <artifactId>mapson</artifactId>
+       <version>${mapson.version}</version>
+    </dependency>
+  ```  
+    
+## Example: MAPson and equivalent JSON:
+
+### MAPson:
  
   | key  | value |
   | ---------- | ----- |
@@ -38,9 +48,10 @@
   | topping[6].type           |   Maple                       |
    
   
-  ### JSON:
+### JSON:
   
-  ````{
+  ```json 
+ {
   {
     "id": "0001",
     "type": "donut",
