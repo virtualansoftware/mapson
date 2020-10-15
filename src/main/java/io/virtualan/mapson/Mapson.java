@@ -79,10 +79,10 @@ public class Mapson {
     for (Map.Entry<String, String> mapsonEntry : jsonPathMap.entrySet()) {
       String key = mapsonEntry.getKey();
       if (key.indexOf('.') != -1) {
-        buildChildJson(params, key.split("\\."), mapsonEntry.getValue());
+        buildChildJson(params, key.split("\\."), getActualValue(mapsonEntry.getValue(), contextObject));
       } else if (key.contains("[") && key.contains("]")) {
         String elementAt = key.substring(0, key.indexOf('['));
-        params.put(elementAt, buildObjectList(params, key, mapsonEntry.getValue()));
+        params.put(elementAt, buildObjectList(params, key, getActualValue(mapsonEntry.getValue(), contextObject)));
       } else {
         params.put(key, getActualValue(mapsonEntry.getValue(), contextObject));
       }
