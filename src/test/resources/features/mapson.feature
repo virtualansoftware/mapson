@@ -9,7 +9,6 @@ Feature: Test MAPson API
     Then validate the Json is as Expected
       | key | {"output":"Gold-Fish","input":"Fish","method":"POST","url":"/pets","httpStatusCode":"201"}|
     Then check the reverse way able to to create the MAPson successfully
-
   Scenario: Create and validate how to create MAPson data and validate data type
     Given create a Json with given MAPson input
       | id                        |  0001                         |
@@ -87,7 +86,16 @@ Feature: Test MAPson API
       | ppu |   0.55  |
     Then check the Json with context value is Valid
       | key |{"ppu":0.55,"batters":{"batter":[{"id":"1001","type":"Regular"},{"id":"1002","type":"Chocolate"},{"id":"1003","type":"Blueberry"},{"id":"1004","type":"Devil's Food"}]},"name":"Cake","id":"0001","type":"donut","topping":[{"id":"5001","type":"None"},{"id":"5002","type":"Glazed"},{"id":"5005","type":"Sugar"},{"id":"5007","type":"Powdered Sugar"},{"id":"5006","type":"Chocolate with Sprinkles"},{"id":"5003","type":"Chocolate"},{"id":"5004","type":"Maple"}]}|
-    Then check the reverse way MAPson is Invalid
+#    Then validate csvson rows
+#      | id, type                        |
+#      | 5001, None                      |
+#      | 5002, Glazed                    |
+#      | 5005, Sugar                     |
+#      | 5007, Powdered Sugar            |
+#      | 5006, Chocolate with Sprinkles  |
+#      | 5003,Chocolate                  |
+#      | 5004,Maple                      |
+    ##Then check the reverse way MAPson is Invalid
 
   Scenario: Create and validate for create MAPson from JSON
     Given create a Json with given MAPson input
@@ -101,4 +109,7 @@ Feature: Test MAPson API
       | ppu |   0.55  |
     Then check the Json with context value is Valid
       | key |{"ppu":0.55,"name":"Cake","toppings":[5001,2001],"id":"0001","type":"donut"}|
+    Then validate csvson rows
+      |ppu,name,toppings,id,type     |
+      |d~0.55,Cake,i~5001\|i~2001\|,0001,donut |
     Then check the reverse way MAPson is Invalid

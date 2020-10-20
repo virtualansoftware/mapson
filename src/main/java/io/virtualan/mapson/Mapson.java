@@ -55,7 +55,8 @@ public class Mapson {
       if (key.indexOf('.') != -1) {
         buildChildJson(params, key.split("\\."), mapsonEntry.getValue());
       } else if (key.contains("[") && key.contains("]")) {
-        params.put(key, buildObjectList(params, key, mapsonEntry.getValue()));
+        String originalKey = (key.indexOf(".") == -1) ? key.substring(0, key.indexOf("[")) : key;
+        params.put(originalKey, buildObjectList(params, key, mapsonEntry.getValue()));
       } else {
         params.put(key, mapsonEntry.getValue());
       }
