@@ -14,12 +14,14 @@
 
 package io.virtualan.mapson;
 
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
  * The MAPson Data type helper.
  */
+@Slf4j
 public class DataTypeHelper {
 
   private DataTypeHelper() {

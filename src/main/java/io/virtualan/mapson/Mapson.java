@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -34,6 +35,7 @@ import org.json.JSONTokener;
  * Product Owner/Business analysts(Non technical team members) can create a features without knowing
  * the details and simply using JSON hierarchy.
  */
+@Slf4j
 public class Mapson {
 
   private Mapson() {

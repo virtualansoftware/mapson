@@ -31,12 +31,27 @@ import java.util.function.IntPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * Csvson  represents JSON as customized CSV. Csvson provides options to work json as CSV  file for
+ * feature file data verification process. It removes technical dependency between gherkin and Json.
+ * This would help lot more for Subject Matter Export/Product Owner/Business analysts(Non technical
+ * team members) can create a features without knowing the details and simply using JSON hierarchy.
+ */
+@Slf4j
 public class Csvson {
 
-
+  /**
+   * Build cs vson json array.
+   *
+   * @param csvline       the csvline
+   * @param contextObject the context object
+   * @return the json array
+   * @throws BadInputDataException the bad input data exception
+   */
   public static JSONArray buildCSVson(List<String> csvline, Map<String, String> contextObject)  throws BadInputDataException {
     String heading = csvline.get(0);
     List<String> list = csvline.subList(1, csvline.size());
