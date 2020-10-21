@@ -17,6 +17,7 @@ package io.virtualan.csvson;
 
 import io.virtualan.mapson.Mapson;
 import io.virtualan.mapson.exception.BadInputDataException;
+import io.virtualan.util.Helper;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -36,12 +37,12 @@ import org.json.JSONObject;
 public class Csvson {
 
 
-  public static JSONArray buildCSVson(List<String> csvline)  throws BadInputDataException {
+  public static JSONArray buildCSVson(List<String> csvline, Map<String, String> contextObject)  throws BadInputDataException {
     String heading = csvline.get(0);
     List<String> list = csvline.subList(1, csvline.size());
     List<JSONObject> listJSONArray = list.stream().map(s -> {
       try {
-        return new JSONObject(splitRow(heading, s));
+        return new JSONObject(splitRow(heading, Helper.getActualValue(s, contextObject).toString()));
       } catch (BadInputDataException e) {
         return null;
       }

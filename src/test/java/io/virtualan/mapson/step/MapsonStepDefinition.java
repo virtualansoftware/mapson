@@ -51,7 +51,7 @@ public class MapsonStepDefinition {
 
 	@Then("validate csvson rows$")
 	public void validateJson(List<String> csvline) throws BadInputDataException {
-		JSONArray jsonArray = Csvson.buildCSVson(csvline);
+		JSONArray jsonArray = Csvson.buildCSVson(csvline , contextObject);
 		LOGGER.info(jsonArray.toString(2));
 		jsonActual = Mapson.buildMAPsonAsJson(mapson, contextObject);
 		Assert.assertTrue(VirtualJSONAssert.jAssertObject(jsonArray.optJSONObject(0), new JSONObject(jsonActual), JSONCompareMode.STRICT));

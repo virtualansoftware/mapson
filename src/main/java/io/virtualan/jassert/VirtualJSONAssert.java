@@ -14,13 +14,21 @@ public class VirtualJSONAssert {
   public static boolean jAssertObject(JSONObject expected, JSONObject actual, JSONCompareMode mode) {
     JSONCompareResult result = JSONCompare.compareJSON(
         actual, expected, mode);
-    log.info(result.getMessage());
+    logger(result);
     return result.passed();
   }
   public static boolean jAssertArray(JSONArray expected, JSONArray actual, JSONCompareMode mode) {
     JSONCompareResult result = JSONCompare.compareJSON(
         actual, expected, mode);
-    log.info(result.getMessage());
+    logger(result);
     return result.passed();
+  }
+
+  private static void logger(JSONCompareResult result) {
+    if(result.passed()) {
+      log.info(result.getMessage());
+    } else if(result.failed()) {
+      log.warning(result.getMessage());
+    }
   }
 }

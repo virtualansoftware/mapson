@@ -16,6 +16,7 @@
 package io.virtualan.mapson;
 
 import io.virtualan.mapson.exception.BadInputDataException;
+import io.virtualan.util.Helper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -80,12 +81,13 @@ public class Mapson {
     for (Map.Entry<String, String> mapsonEntry : jsonPathMap.entrySet()) {
       String key = mapsonEntry.getKey();
       if (key.indexOf('.') != -1) {
-        buildChildJson(params, key.split("\\."), getActualValue(mapsonEntry.getValue(), contextObject));
+        buildChildJson(params, key.split("\\."), Helper
+            .getActualValue(mapsonEntry.getValue(), contextObject));
       } else if (key.contains("[") && key.contains("]")) {
         String elementAt = key.substring(0, key.indexOf('['));
-        params.put(elementAt, buildObjectList(params, key, getActualValue(mapsonEntry.getValue(), contextObject)));
+        params.put(elementAt, buildObjectList(params, key, Helper.getActualValue(mapsonEntry.getValue(), contextObject)));
       } else {
-        params.put(key, getActualValue(mapsonEntry.getValue(), contextObject));
+        params.put(key, Helper.getActualValue(mapsonEntry.getValue(), contextObject));
       }
     }
     return buildJsonString(params).toString();
@@ -139,13 +141,13 @@ public class Mapson {
         for (Object object : (List<Object>) mapEntry.getValue()) {
           if (object instanceof Map) {
             JSONObject obj = buildJsonString((Map<String, Object>) object);
-            array.put(getActualValue(obj, contextObject));
+            array.put(Helper.getActualValue(obj, contextObject));
           }
         }
         DataTypeHelper.setObject(jsonObject, mapEntry.getKey(), array);
       } else {
         DataTypeHelper.setObject(jsonObject, mapEntry.getKey(),
-            getActualValue(mapEntry.getValue(), contextObject));
+            Helper.getActualValue(mapEntry.getValue(), contextObject));
       }
 
     }
@@ -177,17 +179,6 @@ public class Mapson {
     return jsonObject;
   }
 
-  private static Object getActualValue(Object object, Map<String, String> contextObject) {
-    String key = object.toString();
-    if (key.indexOf('[') != -1) {
-      String idkey = key.substring(key.indexOf('[') + 1, key.indexOf(']'));
-      if (contextObject.containsKey(idkey)) {
-        return key.replaceAll("\\[" + key.substring(key.indexOf('[') + 1, key.indexOf(']') + 1),
-            contextObject.get(idkey));
-      }
-    }
-    return object;
-  }
 
 
   private static Map<String, Object> buildChildJson(Map<String, Object> jsonStructMap, String[] key,
