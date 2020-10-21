@@ -6,6 +6,7 @@
   <name>mapson</name>
   <version>1.0.2-SNAPSHOT</version>
   <properties>
+    <jsonassert.version>1.5.0</jsonassert.version>
     <java.version>1.8</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -14,10 +15,12 @@
     <cucumber.version>4.8.0</cucumber.version>
     <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+    <lombok.version>1.18.16</lombok.version>
+    <slf4j-api.version>1.7.30</slf4j-api.version>
   </properties>
   <description>
-    MAPson library represents JSON as MAP with key as Json-Path. MAPson provides options to work
-    json as MAP.
+    MAPson, CSVson library represents JSON as MAP with key as Json-Path and CSV based JSON representation. MAPson provides options to work
+    json as MAP and Customized CSV.
   </description>
   <url>https://www.mapson.io/</url>
   <licenses>
@@ -67,20 +70,6 @@
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
-<!--      <plugin>-->
-<!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-gpg-plugin</artifactId>-->
-<!--        <version>1.4</version>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <id>sign-artifacts</id>-->
-<!--            <phase>verify</phase>-->
-<!--            <goals>-->
-<!--              <goal>sign</goal>-->
-<!--            </goals>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--      </plugin>-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -123,6 +112,21 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
         </plugins>
       </build>
     </profile>
@@ -155,19 +159,19 @@
     <dependency>
       <groupId>org.skyscreamer</groupId>
       <artifactId>jsonassert</artifactId>
-      <version>1.5.0</version>
+      <version>${jsonassert.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.30</version>
+      <version>${slf4j-api.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.16</version>
+      <version>${lombok.version}</version>
     </dependency>
 
   </dependencies>
