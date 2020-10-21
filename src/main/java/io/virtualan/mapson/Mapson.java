@@ -16,6 +16,7 @@
 package io.virtualan.mapson;
 
 import io.virtualan.mapson.exception.BadInputDataException;
+import io.virtualan.util.Helper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -33,6 +35,7 @@ import org.json.JSONTokener;
  * Product Owner/Business analysts(Non technical team members) can create a features without knowing
  * the details and simply using JSON hierarchy.
  */
+@Slf4j
 public class Mapson {
 
   private Mapson() {
@@ -55,7 +58,8 @@ public class Mapson {
       if (key.indexOf('.') != -1) {
         buildChildJson(params, key.split("\\."), mapsonEntry.getValue());
       } else if (key.contains("[") && key.contains("]")) {
-        params.put(key, buildObjectList(params, key, mapsonEntry.getValue()));
+        String originalKey = (key.indexOf(".") == -1) ? key.substring(0, key.indexOf("[")) : key;
+        params.put(originalKey, buildObjectList(params, key, mapsonEntry.getValue()));
       } else {
         params.put(key, mapsonEntry.getValue());
       }
@@ -79,12 +83,13 @@ public class Mapson {
     for (Map.Entry<String, String> mapsonEntry : jsonPathMap.entrySet()) {
       String key = mapsonEntry.getKey();
       if (key.indexOf('.') != -1) {
-        buildChildJson(params, key.split("\\."), getActualValue(mapsonEntry.getValue(), contextObject));
+        buildChildJson(params, key.split("\\."), Helper
+            .getActualValue(mapsonEntry.getValue(), contextObject));
       } else if (key.contains("[") && key.contains("]")) {
         String elementAt = key.substring(0, key.indexOf('['));
-        params.put(elementAt, buildObjectList(params, key, getActualValue(mapsonEntry.getValue(), contextObject)));
+        params.put(elementAt, buildObjectList(params, key, Helper.getActualValue(mapsonEntry.getValue(), contextObject)));
       } else {
-        params.put(key, getActualValue(mapsonEntry.getValue(), contextObject));
+        params.put(key, Helper.getActualValue(mapsonEntry.getValue(), contextObject));
       }
     }
     return buildJsonString(params).toString();
@@ -138,13 +143,13 @@ public class Mapson {
         for (Object object : (List<Object>) mapEntry.getValue()) {
           if (object instanceof Map) {
             JSONObject obj = buildJsonString((Map<String, Object>) object);
-            array.put(getActualValue(obj, contextObject));
+            array.put(Helper.getActualValue(obj, contextObject));
           }
         }
         DataTypeHelper.setObject(jsonObject, mapEntry.getKey(), array);
       } else {
         DataTypeHelper.setObject(jsonObject, mapEntry.getKey(),
-            getActualValue(mapEntry.getValue(), contextObject));
+            Helper.getActualValue(mapEntry.getValue(), contextObject));
       }
 
     }
@@ -176,17 +181,6 @@ public class Mapson {
     return jsonObject;
   }
 
-  private static Object getActualValue(Object object, Map<String, String> contextObject) {
-    String key = object.toString();
-    if (key.indexOf('[') != -1) {
-      String idkey = key.substring(key.indexOf('[') + 1, key.indexOf(']'));
-      if (contextObject.containsKey(idkey)) {
-        return key.replaceAll("\\[" + key.substring(key.indexOf('[') + 1, key.indexOf(']') + 1),
-            contextObject.get(idkey));
-      }
-    }
-    return object;
-  }
 
 
   private static Map<String, Object> buildChildJson(Map<String, Object> jsonStructMap, String[] key,

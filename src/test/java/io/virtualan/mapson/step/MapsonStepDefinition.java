@@ -18,11 +18,17 @@ package io.virtualan.mapson.step;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
+import io.virtualan.csvson.Csvson;
+import io.virtualan.jassert.VirtualJSONAssert;
 import io.virtualan.mapson.Mapson;
 import io.virtualan.mapson.exception.BadInputDataException;
+import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Assert;
 import java.util.Map;
 import java.util.logging.Logger;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 public class MapsonStepDefinition {
 	private final static Logger LOGGER = Logger.getLogger(MapsonStepDefinition.class.getName());
@@ -37,18 +43,27 @@ public class MapsonStepDefinition {
 		mapson = inputJsonPathMap;
 	}
 	
-	@And("build context object")
+	@And("build context object$")
 	public void createContextObject(Map<String, String> inputMap)  {
 		contextObject = inputMap;
 	}
-	
-	@Then("validate the Json is as Expected")
+
+
+	@Then("validate csvson rows$")
+	public void validateJson(List<String> csvline) throws BadInputDataException {
+		JSONArray jsonArray = Csvson.buildCSVson(csvline , contextObject);
+		LOGGER.info(jsonArray.toString(2));
+		jsonActual = Mapson.buildMAPsonAsJson(mapson, contextObject);
+		Assert.assertTrue(VirtualJSONAssert.jAssertObject(jsonArray.optJSONObject(0), new JSONObject(jsonActual), JSONCompareMode.STRICT));
+	}
+
+	@Then("validate the Json is as Expected$")
 	public void validateJson(Map<String, String> JsonExpected) throws BadInputDataException {
 		jsonActual = Mapson.buildMAPsonAsJson(mapson);
 		Assert.assertEquals(JsonExpected.get("key"), jsonActual);
 	}
 	
-	@Then("check the Json with context value is Valid")
+	@Then("check the Json with context value is Valid$")
 	public void validateJsonWithContext(Map<String, String> JsonExpected) throws BadInputDataException {
 		jsonActual = Mapson.buildMAPsonAsJson(mapson, contextObject);
 		Assert.assertEquals(JsonExpected.get("key"), jsonActual);
