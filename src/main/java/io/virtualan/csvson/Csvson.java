@@ -42,7 +42,7 @@ public class Csvson {
     List<String> list = csvline.subList(1, csvline.size());
     List<JSONObject> listJSONArray = list.stream().map(s -> {
       try {
-        return new JSONObject(splitRow(heading, Helper.getActualValue(s, contextObject).toString()));
+        return new JSONObject(splitRow(heading, Helper.getActualValueForAll(s, contextObject).toString()));
       } catch (BadInputDataException e) {
         return null;
       }
