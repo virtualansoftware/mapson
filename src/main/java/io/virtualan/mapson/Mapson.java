@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) 2019.  Virtualan Software Contributors (https://virtualan.io)
+ *   Copyright (c) 2020.  Virtualan Software Contributors (https://virtualan.io)
  *
  *   Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  *   file except  in compliance with the License. You may obtain a copy of the License at
@@ -187,6 +187,11 @@ public class Mapson {
       Object value) throws BadInputDataException {
     try {
       String elementAt = key[0];
+     if (elementAt.contains("['") && elementAt.contains("']")) {
+        String elementAtArray = elementAt.substring(0, elementAt.indexOf('['));
+        String indexStr = elementAt.substring(elementAt.indexOf('[') + 1, elementAt.indexOf(']'));
+        elementAt = elementAtArray +"."+elementAt.substring(elementAt.indexOf('[') + 2, elementAt.indexOf(']')-1)+elementAt.substring(elementAt.indexOf("']")+2);
+      }
       if (elementAt.contains("[") && elementAt.contains("]")) {
         buildArrayOfObject(jsonStructMap, key, value, elementAt);
       } else {
@@ -238,6 +243,7 @@ public class Mapson {
     populateKeyPath(key, value, objListMap);
     populateList(index, elementList, objListMap);
     jsonStructMap.put(elementAtArray, elementList);
+
   }
 
   private static void populateList(int index, List<Map<String, Object>> elementList,
@@ -294,7 +300,12 @@ public class Mapson {
     Iterator<String> keys = jsonObject1.keys();
     while (keys.hasNext()) {
       String keey = keys.next();
-      String keeey = key == null ? keey : key + "." + keey;
+      String keeey  = null;
+      if(keey.contains(".")){
+        keeey = key == null ? keey : key + "." + keey.split("\\.")[0] +"['"+ keey.split("\\.")[1] +"']";
+      } else{
+        keeey = key == null ? keey : key + "." + keey;
+      }
       getSubPath(mapsonMap, jsonObject1, keey, keeey);
     }
   }
