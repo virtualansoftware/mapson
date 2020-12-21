@@ -4,7 +4,7 @@
   <artifactId>mapson</artifactId>
   <packaging>jar</packaging>
   <name>mapson</name>
-  <version>1.1.1-SNAPSHOT</version>
+  <version>1.1.1</version>
   <properties>
     <jsonassert.version>1.5.0</jsonassert.version>
     <java.version>1.8</java.version>
@@ -35,7 +35,7 @@
     <developerConnection>scm:git:ssh://git@github.com/virtualansoftware/mapson.git
     </developerConnection>
     <url>https://github.com/virtualansoftware/mapson.git</url>
-    <tag>v1.0.0</tag>
+    <tag>v1.1.1-1</tag>
   </scm>
   <developers>
     <!-- original author of the project -->
