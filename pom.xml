@@ -4,7 +4,7 @@
   <artifactId>mapson</artifactId>
   <packaging>jar</packaging>
   <name>mapson</name>
-  <version>1.1.1-SNAPSHOT</version>
+  <version>1.1.2-SNAPSHOT</version>
   <properties>
     <jsonassert.version>1.5.0</jsonassert.version>
     <java.version>1.8</java.version>
@@ -88,26 +88,30 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>1.6.3</version>
-            <extensions>true</extensions>
-            <configuration>
-              <serverId>nexus-releases</serverId>
-              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <autoReleaseAfterClose>true</autoReleaseAfterClose>
-            </configuration>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.2.0</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.6</version>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+              <source>8</source>
+            </configuration>
+            <version>3.2.0</version>
             <executions>
               <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
+                <id>attach-javadocs</id>
                 <goals>
-                  <goal>sign</goal>
+                  <goal>jar</goal>
                 </goals>
               </execution>
             </executions>
@@ -126,11 +130,11 @@
               </execution>
             </executions>
           </plugin>
-
         </plugins>
       </build>
     </profile>
   </profiles>
+
   <dependencies>
     <dependency>
       <groupId>org.json</groupId>
