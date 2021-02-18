@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 /**
  * MAPson library represents JSON as MAP with key as Json-Path. MAPson provides options to work json
@@ -95,6 +95,18 @@ public class Mapson {
     return buildJsonString(params).toString();
   }
 
+  private static Object getJSON(String json) {
+    try {
+      return new JSONObject(json);
+    } catch (JSONException err) {
+      try {
+        return new JSONArray(json);
+      } catch (Exception e) {
+        log.error("invalid JSON > " + json);
+      }
+    }
+    return  null;
+  }
 
   /**
    * Build MAPson(Json-Path as key value pair) from json string. Usage refer read me file and test
@@ -104,10 +116,11 @@ public class Mapson {
    * @return the map
    */
   public static Map<String, String> buildMAPsonFromJson(String json) {
-    JSONTokener jsonTokener = new JSONTokener(json);
-    JSONObject jsonObject = new JSONObject(jsonTokener);
+    Object object = getJSON(json);
     Map<String, String> mapsonMap = new LinkedHashMap<>();
-    getJSONPath(jsonObject, null, mapsonMap);
+    if(object != null) {
+      getJSONPath(object, null, mapsonMap);
+    }
     return mapsonMap;
   }
 
@@ -187,7 +200,7 @@ public class Mapson {
       Object value) throws BadInputDataException {
     try {
       String elementAt = key[0];
-     if (elementAt.contains("['") && elementAt.contains("']")) {
+      if (elementAt.contains("['") && elementAt.contains("']")) {
         String elementAtArray = elementAt.substring(0, elementAt.indexOf('['));
         String indexStr = elementAt.substring(elementAt.indexOf('[') + 1, elementAt.indexOf(']'));
         elementAt = elementAtArray +"."+elementAt.substring(elementAt.indexOf('[') + 2, elementAt.indexOf(']')-1)+elementAt.substring(elementAt.indexOf("']")+2);
