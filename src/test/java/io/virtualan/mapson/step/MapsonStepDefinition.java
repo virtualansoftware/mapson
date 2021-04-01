@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import java.util.Map;
 import java.util.logging.Logger;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 public class MapsonStepDefinition {
@@ -66,7 +67,7 @@ public class MapsonStepDefinition {
 	@Then("check the Json with context value is Valid$")
 	public void validateJsonWithContext(Map<String, String> JsonExpected) throws BadInputDataException {
 		jsonActual = Mapson.buildMAPsonAsJson(mapson, contextObject);
-		Assert.assertEquals(JsonExpected.get("key"), jsonActual);
+		VirtualJSONAssert.jAssertObject(new JSONObject(JsonExpected.get("key")), new JSONObject(jsonActual), JSONCompareMode.LENIENT);
 	}
 	
 	@Then("check the reverse way able to to create the MAPson successfully")

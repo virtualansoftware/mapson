@@ -93,11 +93,11 @@ public class Csvson {
     String[] subElement = indexExists(subElementParent, 1)?  subElementParent[1].split(":") : null;
     String[] subArrayElementValue = entry.getValue().split("\\|");
     String[] subElementValue = entry.getValue().split(":");
-
+    boolean isArray = entry.getValue().endsWith("|");
     Stream<List<SimpleEntry<String, String>>>
         streamArrayElement  = null;
-    if(subElement != null && subArrayElementValue != null ) {
-      if (subArrayElementValue.length > 1) {
+    if(subElement != null && subArrayElementValue != null) {
+      if (subArrayElementValue.length >= 1 && isArray) {
         streamArrayElement = IntStream.range(0, subArrayElementValue.length)
             .mapToObj(i ->
                 getArrayElementList(prefix, subElement, subArrayElementValue[i].split(":"), i));
@@ -114,7 +114,7 @@ public class Csvson {
       return subElementMap;
     }
     else {
-      if(subArrayElementValue != null && subArrayElementValue.length > 1) {
+      if(subArrayElementValue != null && subArrayElementValue.length >= 1 && isArray) {
         return IntStream.range(0, subArrayElementValue.length).mapToObj(i -> (new SimpleEntry<String, String>(prefix +"[" +i+"]",subArrayElementValue[i])))
             .collect(Collectors.toList());
       } else {
@@ -173,20 +173,40 @@ public class Csvson {
 
   private static List<SimpleEntry<String, String>> getElementList(String prefix, String[] subElement,
       String[] valueElement) {
-    IntPredicate valueIsNotNull = i -> indexExists(valueElement, i) && valueElement[i] != null && !valueElement[i].equalsIgnoreCase("");
-    return IntStream.range(0, subElement.length)
-        .filter(valueIsNotNull).mapToObj(i -> (new SimpleEntry<String, String>(prefix +"." + subElement[i],
-            valueElement[i])))
-        .collect(Collectors.toList());
+    IntPredicate valueIsNotNull = i -> indexExists(valueElement, i) && valueElement[i] != null
+        && !valueElement[i].equalsIgnoreCase("");
+    if (subElement == null) {
+      return IntStream.range(0, 1)
+          .filter(valueIsNotNull)
+          .mapToObj(i -> (new SimpleEntry<String, String>(prefix ,
+              valueElement[i])))
+          .collect(Collectors.toList());
+    } else {
+      return IntStream.range(0, subElement.length)
+          .filter(valueIsNotNull)
+          .mapToObj(i -> (new SimpleEntry<String, String>(prefix + "." + subElement[i],
+              valueElement[i])))
+          .collect(Collectors.toList());
+    }
   }
 
   private static List<SimpleEntry<String, String>> getArrayElementList(String prefix, String[] subElement,
       String[] valueElement, int index) {
-    IntPredicate valueIsNotNull = i ->  indexExists(valueElement, i) && valueElement[i] != null && !valueElement[i].equalsIgnoreCase("");
-    return IntStream.range(0, subElement.length).filter(valueIsNotNull)
-        .mapToObj(i -> (new SimpleEntry<String, String>(prefix + "[" + index + "]." + subElement[i],
-             (indexExists(valueElement, i)) ? valueElement[i] : null)))
-        .collect(Collectors.toList());
+    IntPredicate valueIsNotNull = i -> indexExists(valueElement, i) && valueElement[i] != null
+        && !valueElement[i].equalsIgnoreCase("");
+    if (subElement == null) {
+      return IntStream.range(0, 1).filter(valueIsNotNull)
+          .mapToObj(i -> (new SimpleEntry<String, String>(prefix + "[" + index + "]" ,
+              (indexExists(valueElement, i)) ? valueElement[i] : null)))
+          .collect(Collectors.toList());
+
+    } else {
+      return IntStream.range(0, subElement.length).filter(valueIsNotNull)
+          .mapToObj(
+              i -> (new SimpleEntry<String, String>(prefix + "[" + index + "]." + subElement[i],
+                  (indexExists(valueElement, i)) ? valueElement[i] : null)))
+          .collect(Collectors.toList());
+    }
   }
 
   private static boolean indexExists(String[] array,int index){

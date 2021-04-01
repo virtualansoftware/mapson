@@ -90,18 +90,6 @@ Feature: Test MAPson API
     Then validate csvson rows
       |ppu,name,topping/id:type,id,type, batters.batter/id:type|
       |d~[ppu],Cake,5001:None\|5002:Glazed\|5005:Sugar\|5007:Powdered Sugar\|5006:Chocolate with Sprinkles\|5003:Chocolate\|[TOPPING]:Maple\|,0001,donut,1001:Regular\|1002:Chocolate\|1003:Blueberry\|1004:Devil's Food\| |
-
-#    Then validate csvson rows
-#      | id, type                        |
-#      | 5001, None                      |
-#      | 5002, Glazed                    |
-#      | 5005, Sugar                     |
-#      | 5007, Powdered Sugar            |
-#      | 5006, Chocolate with Sprinkles  |
-#      | 5003,Chocolate                  |
-#      | 5004,Maple                      |
-    ##Then check the reverse way MAPson is Invalid
-
   Scenario: Create and validate for create MAPson from JSON
     Given create a Json with given MAPson input
       | id                      |  0001                         |
@@ -117,4 +105,44 @@ Feature: Test MAPson API
     Then validate csvson rows
       |ppu,name,toppings,id,type     |
       |d~0.55,Cake,i~5001\|i~2001\|,0001,donut |
+    Then check the reverse way MAPson is Invalid
+
+  Scenario: Create and validate single element array for create MAPson from JSON
+    Given create a Json with given MAPson input
+      | photoUrls[0]  | string    |
+      | name          | [petName] |
+      | id            | i~100     |
+      | category.name | string    |
+      | category.id   | i~100     |
+      | status        | available |
+      | tags[0].name  | string    |
+      | tags[0].id    | i~0       |
+    And build context object
+      | petName |   doggie  |
+    Then check the Json with context value is Valid
+      | key |{   "category": {     "id": 100,     "name": "string"   },   "id": 100,   "name": "doggie",   "photoUrls": [     "string"   ],   "status": "available",   "tags": [     {       "id": 0,       "name": "string"     }   ] }|
+    Then validate csvson rows
+      |id,name, category/id:name,tags/id:name,status,photoUrls|
+      |i~100,doggie,i~100:string,i~0:string\|,available,string\||
+    Then check the reverse way MAPson is Invalid
+  Scenario: Create and validate single element array for create MAPson from JSON
+    Given create a Json with given MAPson input
+      | photoUrls[0]  | string    |
+      | photoUrls[1]  | string1    |
+      | name          | [petName] |
+      | id            | i~100     |
+      | category.name | string    |
+      | category.id   | i~100     |
+      | status        | available |
+      | tags[0].name  | string    |
+      | tags[0].id    | i~0       |
+      | tags[1].name  | string1    |
+      | tags[1].id    | i~1       |
+    And build context object
+      | petName |   doggie  |
+    Then check the Json with context value is Valid
+      | key |{   "category": {     "id": 100,     "name": "string"   },   "id": 100,   "name": "doggie",   "photoUrls": [     "string", "string1"   ],   "status": "available",   "tags": [      {       "id": 0,       "name": "string"     },     {       "id": 1,       "name": "string1"     }   ] }|
+    Then validate csvson rows
+      |id,name, category/id:name,tags/id:name,status,photoUrls|
+      |i~100,doggie,i~100:string,i~0:string\|i~1:string1\|,available,string\|string1\||
     Then check the reverse way MAPson is Invalid
