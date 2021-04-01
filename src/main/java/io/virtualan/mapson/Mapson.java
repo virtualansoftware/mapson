@@ -28,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 /**
  * MAPson library represents JSON as MAP with key as Json-Path. MAPson provides options to work json
@@ -88,7 +87,8 @@ public class Mapson {
             .getActualValue(mapsonEntry.getValue(), contextObject));
       } else if (key.contains("[") && key.contains("]")) {
         String elementAt = key.substring(0, key.indexOf('['));
-        params.put(elementAt, buildObjectList(params, key, Helper.getActualValue(mapsonEntry.getValue(), contextObject)));
+        params.put(elementAt, buildObjectList(params, key,
+            Helper.getActualValue(mapsonEntry.getValue(), contextObject)));
       } else {
         params.put(key, Helper.getActualValue(mapsonEntry.getValue(), contextObject));
       }
@@ -119,8 +119,12 @@ public class Mapson {
   public static Map<String, String> buildMAPsonFromJson(String json) {
     Object object = getJSON(json);
     Map<String, String> mapsonMap = new LinkedHashMap<>();
-    if(object != null) {
-      getJSONPath(object, null, mapsonMap);
+    if (object != null) {
+      if (object instanceof JSONArray) {
+        getJSONPath(object, "", mapsonMap);
+      } else {
+        getJSONPath(object, null, mapsonMap);
+      }
     }
     return mapsonMap;
   }
@@ -196,15 +200,16 @@ public class Mapson {
   }
 
 
-
   private static Map<String, Object> buildChildJson(Map<String, Object> jsonStructMap, String[] key,
       Object value) throws BadInputDataException {
     try {
       String elementAt = key[0];
-     if (elementAt.contains("['") && elementAt.contains("']")) {
+      if (elementAt.contains("['") && elementAt.contains("']")) {
         String elementAtArray = elementAt.substring(0, elementAt.indexOf('['));
         String indexStr = elementAt.substring(elementAt.indexOf('[') + 1, elementAt.indexOf(']'));
-        elementAt = elementAtArray +"."+elementAt.substring(elementAt.indexOf('[') + 2, elementAt.indexOf(']')-1)+elementAt.substring(elementAt.indexOf("']")+2);
+        elementAt = elementAtArray + "." + elementAt
+            .substring(elementAt.indexOf('[') + 2, elementAt.indexOf(']') - 1) + elementAt
+            .substring(elementAt.indexOf("']") + 2);
       }
       if (elementAt.contains("[") && elementAt.contains("]")) {
         buildArrayOfObject(jsonStructMap, key, value, elementAt);
@@ -314,10 +319,11 @@ public class Mapson {
     Iterator<String> keys = jsonObject1.keys();
     while (keys.hasNext()) {
       String keey = keys.next();
-      String keeey  = null;
-      if(keey.contains(".")){
-        keeey = key == null ? keey : key + "." + keey.split("\\.")[0] +"['"+ keey.split("\\.")[1] +"']";
-      } else{
+      String keeey = null;
+      if (keey.contains(".")) {
+        keeey = key == null ? keey
+            : key + "." + keey.split("\\.")[0] + "['" + keey.split("\\.")[1] + "']";
+      } else {
         keeey = key == null ? keey : key + "." + keey;
       }
       getSubPath(mapsonMap, jsonObject1, keey, keeey);
