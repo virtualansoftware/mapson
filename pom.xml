@@ -15,7 +15,7 @@
     <cucumber.version>4.8.0</cucumber.version>
     <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-    <lombok.version>1.18.18</lombok.version>
+    <lombok.version>1.18.20</lombok.version>
     <slf4j-api.version>1.7.30</slf4j-api.version>
   </properties>
   <description>
