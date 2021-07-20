@@ -4,7 +4,7 @@
   <artifactId>mapson</artifactId>
   <packaging>jar</packaging>
   <name>mapson</name>
-  <version>1.1.6-SNAPSHOT</version>
+  <version>1.1.5-SNAPSHOT</version>
   <properties>
     <jsonassert.version>1.5.0</jsonassert.version>
     <java.version>1.8</java.version>

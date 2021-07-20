@@ -20,12 +20,14 @@ import lombok.extern.slf4j.Slf4j;
 public class Helper {
 
   public static Object getActualValue(Object object, Map<String, String> contextObject) {
-    String key = object.toString();
-    if (key.indexOf('[') != -1) {
-      String idkey = key.substring(key.indexOf('[') + 1, key.indexOf(']'));
-      if (contextObject.containsKey(idkey)) {
-        return key.replaceAll("\\[" + key.substring(key.indexOf('[') + 1, key.indexOf(']') + 1),
-            contextObject.get(idkey));
+    if(object != null) {
+      String key = object.toString();
+      if (key.indexOf('[') != -1) {
+        String idkey = key.substring(key.indexOf('[') + 1, key.indexOf(']'));
+        if (contextObject.containsKey(idkey)) {
+          return key.replaceAll("\\[" + key.substring(key.indexOf('[') + 1, key.indexOf(']') + 1),
+              contextObject.get(idkey).replace("$","\\$"));
+        }
       }
     }
     return object;

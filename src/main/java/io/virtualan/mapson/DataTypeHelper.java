@@ -36,7 +36,10 @@ public class DataTypeHelper {
    * @param value      the value
    */
   public static void setObject(JSONObject jsonObject, String key, Object value) {
-    if (value instanceof String) {
+    if(value == null) {
+      jsonObject.put(key, "");
+      return;
+    }else if (value instanceof String) {
       String newValue = (String) value;
       if (newValue.indexOf('~') == 1) {
         setObjectByType(jsonObject, key, value, newValue);
